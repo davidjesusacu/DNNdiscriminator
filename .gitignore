@@ -91,6 +91,4 @@ ENV/
 # Rope project settings
 .ropeproject
 
-.idea/
-discriminator.py
-settings.py
+
