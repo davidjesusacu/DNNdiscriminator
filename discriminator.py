@@ -45,7 +45,6 @@ dX = discrim(X, *discrim_params)
 _discrim = theano.function([X], dX)
 
 
-
 def folderImages(folder):
     return glob.glob(folder + "/*.jpg")
     # return return (img_paths)
@@ -58,6 +57,12 @@ def get_sample(img_path):
     return samples
 
 
+def get_sample_crop(img_path):
+    from scipy import misc
+    img = misc.imread(img_path)[:227, :227]
+    samples = np.array([misc.imresize(img, (32, 32)).T])
+    return samples
+
 
 def main():
     f = folderImages(sys.argv[1])
@@ -65,11 +70,11 @@ def main():
     scores = []
     print ("#------")
     for i in f:
-        s = get_sample(i)
+        s = get_sample_crop(i)
         scores.append(_discrim(s))
     for i in scores:
         print i
-    print "Mean: %f"%np.mean(scores)
+    print "Mean: %f" % np.mean(scores)
 
 
 if __name__ == '__main__':
