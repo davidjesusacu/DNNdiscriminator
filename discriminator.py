@@ -18,7 +18,6 @@ import glob
 sigmoid = activations.Sigmoid()
 lrelu = activations.LeakyRectify()
 
-
 model_path = DCGAN_ROOT + '/models/imagenet_gan_pretrain_128f_relu_lrelu_7l_3x3_256z/'
 discrim_params = [sharedX(p) for p in joblib.load(model_path + '30_discrim_params.jl')]
 
@@ -46,29 +45,31 @@ dX = discrim(X, *discrim_params)
 _discrim = theano.function([X], dX)
 
 
-def getScore(img_paths):
-    from scipy.misc import imread, imresize
-    imgs = [imresize(imread(i), (32, 32)).T for i in img_paths]
-    samples = np.array(imgs)
-    return _discrim(samples)
+
+def folderImages(folder):
+    return glob.glob(folder + "/*.jpg")
+    # return return (img_paths)
 
 
-def folderScore(folder):
-    img_paths = glob.glob(folder + "/*.jpg")
-    return getScore(img_paths)
+def get_sample(img_path):
+    from scipy import misc
+    img = misc.imread(img_path)
+    samples = np.array([misc.imresize(img, (32, 32)).T])
+    return samples
 
 
-def average_folder(folder_list):
-    print "Starting...."
-    for f in folder_list:
-        print "Folder %s"%f
-        scores = folderScore(f)
-        print scores
-        print "Score mean :%f" % (np.mean(scores))
-        print "---"
 
 def main():
-    return average_folder(sys.argv[1:])
+    f = folderImages(sys.argv[1])
+    print "Image scores:"
+    scores = []
+    print ("#------")
+    for i in f:
+        s = get_sample(i)
+        scores.append(_discrim(s))
+    for i in scores:
+        print i
+    print "Mean: %f"%np.mean(scores)
 
 
 if __name__ == '__main__':
