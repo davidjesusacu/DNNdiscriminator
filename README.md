@@ -2,8 +2,13 @@
 Requires:
  Theano
  DCGAN (https://github.com/Newmu/dcgan_code)
- DCGAN_ROOT= 
+ 
+ 
+# Setup
+Add the path of the DCGAN repo in settings.py DCGAN_ROOT= 
 
-Input images will be cropped to 227x227 to remove irrelevant details
-Example
+
+# Example
 python discriminator.py test/
+
+Input images will be cropped to 227x227 to remove irrelevant details and captions
